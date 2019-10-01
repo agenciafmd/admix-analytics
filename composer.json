@@ -1,0 +1,35 @@
+{
+  "name": "agenciafmd/admix-analytics",
+  "description": "Analytics - Agência F&MD",
+  "homepage": "https://github.com/agenciafmd/admix-analytics",
+  "keywords": [
+    "laravel",
+    "agenciafmd"
+  ],
+  "authors": [
+    {
+      "name": "Irineu Martins Junior",
+      "email": "irineu@fmd.ag",
+      "homepage": "https://fmd.ag/",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "laravel/framework": "5.8.*",
+    "spatie/laravel-analytics": "^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Agenciafmd\\Analytics\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Agenciafmd\\Analytics\\Providers\\AnalyticsServiceProvider"
+      ],
+      "aliases": {
+      }
+    }
+  }
+}
