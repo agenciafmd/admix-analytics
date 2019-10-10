@@ -3,8 +3,8 @@
 namespace Agenciafmd\Analytics\Services;
 
 use Illuminate\Support\Carbon;
-use Spatie\Analytics\Period;
 use Spatie\Analytics\AnalyticsFacade as Analytics;
+use Spatie\Analytics\Period;
 
 class AnalyticsService
 {
@@ -108,5 +108,31 @@ class AnalyticsService
                 'sessions' => (int)$pageTitleRow[2],
             ];
         })->splice(0, $qty);
+    }
+
+    public function topKeyword($days = 7, $qty = 5)
+    {
+        $response = Analytics::performQuery(
+            Period::create(Carbon::yesterday()
+                ->subDays($days - 1)
+                ->startOfDay(), Carbon::yesterday()
+                ->endOfDay()),
+            'ga:pageViews,ga:sessions',
+            [
+                'dimensions' => 'ga:keyword',
+                'sort' => '-ga:pageViews',
+                'filters' => 'ga:keyword!=(none);ga:keyword!=(not set);ga:keyword!=(not provided);ga:keyword!=(automatic matching)',
+            ]
+        );
+
+        return collect($response['rows'] ?? [])
+            ->map(function (array $pageTitleRow) {
+                return [
+                    'keyword' => $pageTitleRow[0],
+                    'pageViews' => (int)$pageTitleRow[1],
+                    'sessions' => (int)$pageTitleRow[2],
+                ];
+            })
+            ->splice(0, $qty);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Agenciafmd\Analytics\Mail;
 
-use Illuminate\Mails\Mailable;
 use Agenciafmd\Analytics\Services\AnalyticsService;
+use Illuminate\Mail\Mailable;
 use Illuminate\Support\Carbon;
 
 class ReportMail extends Mailable
@@ -15,48 +15,78 @@ class ReportMail extends Mailable
         $this->notifiable = $notifiable;
     }
 
-    public function build(AnalyticsService $analyticsServices)
+    public function build(AnalyticsService $analytics)
     {
-        // TODO: refatorar para vir do services
-        /*
-        $initialDate = Carbon::yesterday()->subDays(8)->startOfDay();
-        $finalDate = Carbon::yesterday()->startOfDay();
+        $view['initialDate'] = Carbon::yesterday()
+            ->subDays(8)
+            ->startOfDay();
+        $view['finalDate'] = Carbon::yesterday()
+            ->endOfDay();
 
-        $analytics = $analyticsServices->topPages($initialDate, $finalDate);
-        $medium = $analyticsServices->topMedium($initialDate, $finalDate);
+        $view['sessions'] = human_number($analytics->generic('ga:sessions')['totalForAllResults']);
+        $view['newUsers'] = human_number($analytics->generic('ga:newUsers')['totalForAllResults']);
+        $view['organicSearches'] = human_number($analytics->generic('ga:organicSearches')['totalForAllResults']);
 
-        $table = [];
-        foreach($analytics as $data) {
-            $title = str_replace('|', '&#124;', str_limit($data['pageTitle'], 40));
-            $table[] = (object)[
-                'pagePath' => "[{$title}](https://{$data['hostname']}{$data['pagePath']})",
-                'pageViews' => $data['pageViews'],
-                'avgTimeOnPage' => date('i\m\i\n s\s', mktime(0, 0, (int)$data['avgTimeOnPage'], 1, 1, 2017))
-            ];
+        $analyticsTopPages = $analytics->topPages();
+        $topPages = collect([]);
+        foreach ($analyticsTopPages as $page) {
+            $topPages->push((object)[
+                'path' => $page['pagePath'],
+                'pageViews' => human_number($page['pageViews']),
+            ]);
         }
 
-        $analyticsPageViews = $analyticsServices->pageViews(7);
-        $statisticsLastWeek = $analyticsPageViews['rows']->pluck('sessions')->implode(',');
+        $view['topPages'] = $topPages;
 
-        $analyticsFinalDate = Carbon::today()->subDays(8)->startOfDay();
-        $analyticsPageViews = $analyticsServices->pageViews(7, $analyticsFinalDate);
-        $statisticsPastLastWeek = $analyticsPageViews['rows']->pluck('sessions')->implode(',');
+        $analyticsTopKeyword = $analytics->topKeyword();
+        $topKeyword = collect([]);
+        foreach ($analyticsTopKeyword as $page) {
+            $topKeyword->push((object)[
+                'keyword' => $page['keyword'],
+                'pageViews' => human_number($page['pageViews']),
+            ]);
+        }
 
-        $content = [
-            'greeting' => 'Olá ' . $this->notifiable->name . '!',
-            'introLines' => [
-                'Veja o resumo dos acessos do ' . config('app.name'),
-                'Período de ' . $initialDate->format('d/m/Y') . ' até ' . $finalDate->format('d/m/Y'),
-            ],
-            'analytics' => collect($table),
-            'medium' => collect(json_decode(json_encode($medium))),
-            'statistics' => $statisticsPastLastWeek . '|' . $statisticsLastWeek
-        ];
+        $view['topKeyword'] = $topKeyword;
+
+        $analyticsTopMedium = $analytics->topMedium();
+        $topMedium = collect([]);
+        foreach ($analyticsTopMedium as $page) {
+            $topMedium->push((object)[
+                'medium' => $page['medium'],
+                'pageViews' => human_number($page['pageViews']),
+            ]);
+        }
+
+        $view['topMedium'] = $topMedium;
+
+        $analyticsTopDeviceCategory = $analytics->topDimensions('ga:deviceCategory');
+        $topDeviceCategory = collect([]);
+        $topDeviceCategoryTotal = $analyticsTopDeviceCategory['totalForAllResults'];
+        foreach ($analyticsTopDeviceCategory['rows'] as $device) {
+            $topDeviceCategory->push((object)[
+                'deviceCategory' => $device['dimensions'],
+                'sessions' => human_number($device['sessions']),
+                'percent' => human_number(($device['sessions'] * 100) / $topDeviceCategoryTotal),
+            ]);
+        }
+
+        $view['topDeviceCategory'] = $topDeviceCategory;
+
+        $analyticsTopCity = $analytics->topDimensions('ga:city');
+        $topCity = collect([]);
+        foreach ($analyticsTopCity['rows'] as $city) {
+            $topCity->push((object)[
+                'city' => $city['dimensions'],
+                'pageViews' => human_number($city['sessions']),
+            ]);
+        }
+
+        $view['topCity'] = $topCity;
 
         return $this->to($this->notifiable->email, $this->notifiable->name)
             ->subject(config('app.name') . ' | Relatório de Semanal')
-            ->markdown('mixdinternet/analytics::markdown.statistics')
-            ->with($content);
-        */
+            ->view('agenciafmd/analytics::email.report')
+            ->with($view);
     }
 }

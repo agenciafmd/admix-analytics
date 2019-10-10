@@ -53,5 +53,9 @@ class AnalyticsServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../resources/views' => base_path('resources/views/vendor/agenciafmd/analytics'),
         ], 'views');
+
+        $this->publishes([
+            __DIR__ . '/../resources/images' => public_path('images'),
+        ], 'images');
     }
 }

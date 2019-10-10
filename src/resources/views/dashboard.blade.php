@@ -4,9 +4,6 @@
     <div class="row">
         <!-- http://screencloud.net/v/DN2ov -->
         <div class="col-sm-6 col-md-3">
-            @include('agenciafmd/analytics::widgets.cards.impressions')
-        </div>
-        <div class="col-sm-6 col-md-3">
             @include('agenciafmd/analytics::widgets.cards.sessions')
         </div>
         <div class="col-sm-6 col-md-3">
@@ -23,6 +20,9 @@
         </div>
         <div class="col-sm-6 col-md-3">
             @include('agenciafmd/analytics::widgets.cards.avg-session-duration')
+        </div>
+        <div class="col-sm-6 col-md-3">
+            @include('agenciafmd/analytics::widgets.cards.impressions')
         </div>
         <div class="col-sm-6 col-md-3">
             @include('agenciafmd/analytics::widgets.cards.goal-completions-all')

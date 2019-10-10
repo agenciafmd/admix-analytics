@@ -13,7 +13,7 @@
 composer require agenciafmd/admix-analytics:dev-master
 ```
 
-## Obtendo o view_id no Google
+## Configuração
 
 Vá para o [Google Developers Console](https://console.developers.google.com/apis/dashboard)
 
@@ -55,6 +55,18 @@ Acrescente no arquivo `.env`
 
 ```
 ANALYTICS_VIEW_ID=123456
+```
+
+## Relatório Semanal
+
+![Relatorio Semanal](https://github.com/agenciafmd/admix-analytics/raw/master/docs/relatorio.png "Relatório Semanal")
+
+Semanalmente, enviamos um relatório para os usuários cadastrados no painel.
+
+Não esqueça de publicar as imagens no seu projeto com o comando 
+
+```
+php artisan vendor:publish --provider="Agenciafmd\Analytics\Providers\AnalyticsServiceProvider" --tag="images" --force
 ```
 
 ## Customização

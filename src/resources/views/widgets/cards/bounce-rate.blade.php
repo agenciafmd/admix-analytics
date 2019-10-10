@@ -13,6 +13,6 @@
             </div>
         @endif
         <div class="h1 m-0">{{ number_format($analytics->generic('ga:bounceRate')['totalForAllResults'], 0) }}%</div>
-        <div class="text-muted mb-4">Taxa de rejeição</div>
+        <div class="text-muted mb-4">Taxa de Rejeição</div>
     </div>
 </div>

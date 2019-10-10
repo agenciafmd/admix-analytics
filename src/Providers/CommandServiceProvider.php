@@ -24,12 +24,12 @@ class CommandServiceProvider extends ServiceProvider
                 ->dailyAt('04:00')
                 ->appendOutputTo(storage_path('logs/command-analytics-import-' . date('Y-m-d') . '.log'));
 
-//            $schedule->command('analytics:report')
-//                ->withoutOverlapping()
-//                ->weekly()
-//                ->mondays()
-//                ->at('9:00')
-//                ->appendOutputTo(storage_path('logs/command-analytics-report-' . date('Y-m-d') . '.log'));
+            $schedule->command('analytics:report')
+                ->withoutOverlapping()
+                ->weekly()
+                ->mondays()
+                ->at('9:00')
+                ->appendOutputTo(storage_path('logs/command-analytics-report-' . date('Y-m-d') . '.log'));
         });
     }
 }

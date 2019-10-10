@@ -3,8 +3,7 @@
 namespace Agenciafmd\Analytics\Commands;
 
 use Agenciafmd\Admix\User;
-use Agenciafmd\Analytics\Notifications\StatisticsReportNotification;
-use Agenciafmd\Analytics\Services\AnalyticsService;
+use Agenciafmd\Analytics\Notifications\ReportNotification;
 use Illuminate\Console\Command;
 
 class AnalyticsReport extends Command
@@ -17,10 +16,8 @@ class AnalyticsReport extends Command
     {
         $users = User::get();
 
-
-        // TODO: refatorar
-        foreach ($users as $user) {
-            $user->notify(new StatisticsReportNotification());
-        }
+        $users->each(function ($user) {
+            $user->notify(new ReportNotification());
+        });
     }
 }
