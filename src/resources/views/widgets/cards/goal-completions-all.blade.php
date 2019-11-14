@@ -2,19 +2,19 @@
 
 @if($analytics->generic('ga:goalCompletionsAll')['totalForAllResults'] <= 0)
     <div class="card">
-        <div class="card-block pb-0">
-            <h4 class="mb-0">0</h4>
-            <p>Conversões</p>
+        <div class="text-right invisible">
+            <i class="icon fe-chevron-up"></i>
         </div>
-        <div class="card-block pb-0 pt-0" style="height:70px;">
-            <a href="https://fmd.ag/?utm_source={{ config('app.url') }}&utm_campaign=admix&utm_medium=link&utm_term=conversoes"
-               target="_blank" class="font-weight-bold">Clique aqui</a> e aumente suas conversões.
+        <div class="card-body p-3 text-center">
+            <div class="h1 m-0">0</div>
+            <div class="text-muted mb-4">Conversões</div>
         </div>
     </div>
+
 @else
     @include('agenciafmd/analytics::widgets.cards.default', [
         'label' => 'Conversões',
         'total' => human_number($analytics->generic('ga:goalCompletionsAll')['totalForAllResults']),
-        'indicator' => ($analytics->generic('ga:goalCompletionsAll')['totalForAllResults'] > 0) ? human_number((1 - $analytics->generic('ga:goalCompletionsAll')['totalForAllResultsBefore'] / $analytics->generic('ga:goalCompletionsAll')['totalForAllResults']) * 100) . '%' : human_number((1 - $analytics->generic('ga:goalCompletionsAll')['totalForAllResultsBefore'] / 1) * 100) . '%',
+        'indicator' => ($analytics->generic('ga:goalCompletionsAll')['totalForAllResults'] > 0) ? human_number((1 - $analytics->generic('ga:goalCompletionsAll')['totalForAllResultsBefore'] / $analytics->generic('ga:goalCompletionsAll')['totalForAllResults']) * 100) . '%' : $analytics->generic('ga:goalCompletionsAll')['totalForAllResultsBefore'].'%',
     ])
 @endif

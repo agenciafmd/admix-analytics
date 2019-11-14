@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-body p-3 text-center">
         @if(isset($indicator))
-            <div class="text-right @if(Str::startsWith($indicator, '-')) text-red @else text-green @endif">
+            <div class="text-right @if(Str::startsWith($indicator, '-')) text-red @else text-green @endif  @if($indicator=='0%') invisible @else visible @endif">
                 {{ trim($indicator, '-') }}
                 <i class="icon @if(Str::startsWith($indicator, '-')) fe-chevron-down @else fe-chevron-up @endif"></i>
             </div>
