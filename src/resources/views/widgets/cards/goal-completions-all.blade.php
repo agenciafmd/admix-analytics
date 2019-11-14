@@ -15,6 +15,6 @@
     @include('agenciafmd/analytics::widgets.cards.default', [
         'label' => 'Conversões',
         'total' => human_number($analytics->generic('ga:goalCompletionsAll')['totalForAllResults']),
-        'indicator' => human_number((1 - $analytics->generic('ga:goalCompletionsAll')['totalForAllResultsBefore'] / $analytics->generic('ga:goalCompletionsAll')['totalForAllResults']) * 100) . '%',
+        'indicator' => ($analytics->generic('ga:goalCompletionsAll')['totalForAllResults'] > 0) ? human_number((1 - $analytics->generic('ga:goalCompletionsAll')['totalForAllResultsBefore'] / $analytics->generic('ga:goalCompletionsAll')['totalForAllResults']) * 100) . '%' : human_number((1 - $analytics->generic('ga:goalCompletionsAll')['totalForAllResultsBefore'] / 1) * 100) . '%',
     ])
 @endif

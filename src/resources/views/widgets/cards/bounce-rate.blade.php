@@ -1,7 +1,7 @@
 @inject('analytics', '\Agenciafmd\Analytics\Services\AnalyticsService')
 
 @php
-    $indicator = human_number((1 - $analytics->generic('ga:bounceRate')['totalForAllResultsBefore'] / $analytics->generic('ga:bounceRate')['totalForAllResults']) * 100);
+    $indicator = ($analytics->generic('ga:bounceRate')['totalForAllResults'] > 0) ? human_number((1 - $analytics->generic('ga:bounceRate')['totalForAllResultsBefore'] / $analytics->generic('ga:bounceRate')['totalForAllResults']) * 100) : human_number((1 - $analytics->generic('ga:bounceRate')['totalForAllResultsBefore'] / 1) * 100);
 @endphp
 
 <div class="card">
