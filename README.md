@@ -2,7 +2,7 @@
 
 ![Área Administrativa](https://github.com/agenciafmd/admix-analytics/raw/master/docs/screenshot.png "Área Administrativa")
 
-[![Downloads](https://img.shields.io/packagist/dt/agenciafmd/admix-analytics.svg?style=flat-square)](https://packagist.org/packages/agenciafmd/admix-categories)
+[![Downloads](https://img.shields.io/packagist/dt/agenciafmd/admix-analytics.svg?style=flat-square)](https://packagist.org/packages/agenciafmd/admix-analytics)
 [![Licença](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
 - Dados do Google Analytics no Dashboard
