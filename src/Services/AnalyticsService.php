@@ -59,6 +59,7 @@ class AnalyticsService
                 'dimensions' => $dimensions,
                 'sort' => '-ga:sessions',
                 'filters' => $dimensions . '!=(not set)',
+                'max-results' => $qty,
             ]
         );
 
@@ -89,6 +90,7 @@ class AnalyticsService
                 'dimensions' => 'ga:pageTitle,ga:pagePath,ga:hostname',
                 'sort' => '-ga:pageViews',
                 'filters' => 'ga:pageTitle!=(not set)',
+                'max-results' => $qty,
             ]
         );
 
@@ -118,6 +120,7 @@ class AnalyticsService
                 'dimensions' => 'ga:medium',
                 'sort' => '-ga:pageViews',
                 'filters' => 'ga:medium!=(none);ga:medium!=(not set)',
+                'max-results' => $qty,
             ]
         );
 
@@ -144,6 +147,7 @@ class AnalyticsService
                 'dimensions' => 'ga:keyword',
                 'sort' => '-ga:pageViews',
                 'filters' => 'ga:keyword!=(none);ga:keyword!=(not set);ga:keyword!=(not provided);ga:keyword!=(automatic matching)',
+                'max-results' => $qty,
             ]
         );
 
