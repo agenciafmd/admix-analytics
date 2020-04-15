@@ -1,0 +1,8 @@
+{
+    "namespaces": [
+        {
+            "namespace": "agenciafmd/analytics",
+            "path": "src/resources/views"
+        }
+    ]
+}
