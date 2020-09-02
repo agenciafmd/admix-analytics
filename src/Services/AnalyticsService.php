@@ -16,8 +16,7 @@ class AnalyticsService
                 ->startOfDay(), Carbon::yesterday()
                 ->subDays($days)
                 ->endOfDay()),
-            $metrics,
-            [
+            $metrics, [
                 'dimensions' => 'ga:date',
             ]
         );
@@ -27,8 +26,7 @@ class AnalyticsService
                 ->subDays($days - 1)
                 ->startOfDay(), Carbon::yesterday()
                 ->endOfDay()),
-            $metrics,
-            [
+            $metrics, [
                 'dimensions' => 'ga:date',
             ]
         );
@@ -54,8 +52,7 @@ class AnalyticsService
                 ->subDays($days - 1)
                 ->startOfDay(), Carbon::yesterday()
                 ->endOfDay()),
-            'ga:sessions',
-            [
+            'ga:sessions', [
                 'dimensions' => $dimensions,
                 'sort' => '-ga:sessions',
                 'filters' => $dimensions . '!=(not set)',
@@ -85,8 +82,7 @@ class AnalyticsService
                 ->subDays($days - 1)
                 ->startOfDay(), Carbon::yesterday()
                 ->endOfDay()),
-            'ga:pageViews,ga:avgTimeOnPage',
-            [
+            'ga:pageViews,ga:avgTimeOnPage', [
                 'dimensions' => 'ga:pageTitle,ga:pagePath,ga:hostname',
                 'sort' => '-ga:pageViews',
                 'filters' => 'ga:pageTitle!=(not set)',
@@ -115,8 +111,7 @@ class AnalyticsService
                 ->subDays($days - 1)
                 ->startOfDay(), Carbon::yesterday()
                 ->endOfDay()),
-            'ga:pageViews,ga:sessions',
-            [
+            'ga:pageViews,ga:sessions', [
                 'dimensions' => 'ga:medium',
                 'sort' => '-ga:pageViews',
                 'filters' => 'ga:medium!=(none);ga:medium!=(not set)',
@@ -142,8 +137,7 @@ class AnalyticsService
                 ->subDays($days - 1)
                 ->startOfDay(), Carbon::yesterday()
                 ->endOfDay()),
-            'ga:pageViews,ga:sessions',
-            [
+            'ga:pageViews,ga:sessions', [
                 'dimensions' => 'ga:keyword',
                 'sort' => '-ga:pageViews',
                 'filters' => 'ga:keyword!=(none);ga:keyword!=(not set);ga:keyword!=(not provided);ga:keyword!=(automatic matching)',

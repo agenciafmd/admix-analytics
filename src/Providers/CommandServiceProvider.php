@@ -19,16 +19,24 @@ class CommandServiceProvider extends ServiceProvider
         $this->app->booted(function () {
             $schedule = $this->app->make(Schedule::class);
 
-            $schedule->command('analytics:import')
-                ->withoutOverlapping()
-                ->dailyAt('04:00')
-                ->appendOutputTo(storage_path('logs/command-analytics-import-' . date('Y-m-d') . '.log'));
+            /*
+             * evita que todos os crons do servidor compartilhado
+             * rodem exatamente na mesma hora
+             * */
+            $minutes = cache()->rememberForever('schedule-minutes', function () {
+                return str_pad(rand(0, 59), 2, 0, STR_PAD_LEFT);
+            });
+
+//            $schedule->command('analytics:import')
+//                ->withoutOverlapping()
+//                ->dailyAt('04:00')
+//                ->appendOutputTo(storage_path('logs/command-analytics-import-' . date('Y-m-d') . '.log'));
 
             $schedule->command('analytics:report')
                 ->withoutOverlapping()
                 ->weekly()
                 ->mondays()
-                ->at('9:00')
+                ->at("09:{$minutes}")
                 ->appendOutputTo(storage_path('logs/command-analytics-report-' . date('Y-m-d') . '.log'));
         });
     }
