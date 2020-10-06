@@ -12,6 +12,6 @@ return [
     'cache_lifetime_in_minutes' => 60 * 24,
 
     'cache' => [
-        'store' => 'file',
+        'store' => 'redis',
     ],
 ];

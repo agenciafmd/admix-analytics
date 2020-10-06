@@ -27,10 +27,10 @@ class CommandServiceProvider extends ServiceProvider
                 return str_pad(rand(0, 59), 2, 0, STR_PAD_LEFT);
             });
 
-//            $schedule->command('analytics:import')
-//                ->withoutOverlapping()
-//                ->dailyAt('04:00')
-//                ->appendOutputTo(storage_path('logs/command-analytics-import-' . date('Y-m-d') . '.log'));
+            $schedule->command('analytics:import')
+                ->withoutOverlapping()
+                ->dailyAt("05:{$minutes}")
+                ->appendOutputTo(storage_path('logs/command-analytics-import-' . date('Y-m-d') . '.log'));
 
             $schedule->command('analytics:report')
                 ->withoutOverlapping()

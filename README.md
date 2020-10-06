@@ -51,10 +51,13 @@ Copie o **ID da Vista de Propriedade** (**view_id**)
 
 ![ID da Vista de Propriedade](https://github.com/agenciafmd/admix-analytics/raw/master/docs/analytics04.png "ID da Vista de Propriedade")
 
-Acrescente no arquivo `.env`
+O nosso `.env` ficará assim
 
 ```
-ANALYTICS_VIEW_ID=123456
+GOOGLE_TAGMANAGER=GTM-XXXXXXX
+ANALYTICS_VIEW_ID=123456789
+GOOGLE_SITE_VERIFICATION=XXXXXXXXXXXXXXXXXXXXXXXX
+GOOGLE_API_KEY=
 ```
 
 ## Relatório Semanal
@@ -63,18 +66,35 @@ ANALYTICS_VIEW_ID=123456
 
 Semanalmente, enviamos um relatório para os usuários cadastrados no painel.
 
-Não esqueça de publicar as imagens no seu projeto com o comando 
+Não esqueça de publicar os assets no seu projeto com o comando 
 
 ```
-php artisan vendor:publish --provider="Agenciafmd\Analytics\Providers\AnalyticsServiceProvider" --tag="images" --force
+php artisan vendor:publish --tag=admix-analytics:assets
 ```
 
+## Dados no frontend
+
+Podemos usar os componentes abaixo para instalarmos o analytics e a verificação do console search
+
+```html
+<head>
+    <x-admix-analytics::gtm.head />
+    ...
+    <x-admix-analytics::site-verification />
+</head>
+<body>
+    <x-admix-analytics::gtm.body />
+    ...
+</body>
+```
+ 
 ## Customização
 
-Caso seja **extremamente** necessário, é possivel a configuração do pacote no arquivo `config/analytics.php`
+Caso seja **extremamente** necessário, é possivel a configuração do pacote no arquivo `config/analytics.php` ou das `views`
 
 Para isso, publique o arquivo com o comando abaixo:
 
 ```
-php artisan vendor:publish --provider="Agenciafmd\Analytics\Providers\AnalyticsServiceProvider" --tag="config"
+php artisan vendor:publish --tag="admix-analytics:config"
+php artisan vendor:publish --tag="admix-analytics:views"
 ```
