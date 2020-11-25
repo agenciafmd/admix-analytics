@@ -29,7 +29,7 @@ class BladeServiceProvider extends ServiceProvider
 
     protected function loadBladeComponents()
     {
-//        Blade::component('ui.select', Ui\SelectComponent::class);
+        //
     }
 
     protected function loadBladeComposers()

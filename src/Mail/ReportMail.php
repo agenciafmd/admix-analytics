@@ -18,7 +18,7 @@ class ReportMail extends Mailable
     public function build(AnalyticsService $analytics)
     {
         $view['initialDate'] = Carbon::yesterday()
-            ->subDays(8)
+            ->subDays(7)
             ->startOfDay();
         $view['finalDate'] = Carbon::yesterday()
             ->endOfDay();

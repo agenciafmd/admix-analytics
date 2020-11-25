@@ -29,14 +29,14 @@ class CommandServiceProvider extends ServiceProvider
 
             $schedule->command('analytics:import')
                 ->withoutOverlapping()
-                ->dailyAt("05:{$minutes}")
+                ->dailyAt("04:{$minutes}")
                 ->appendOutputTo(storage_path('logs/command-analytics-import-' . date('Y-m-d') . '.log'));
 
             $schedule->command('analytics:report')
                 ->withoutOverlapping()
                 ->weekly()
                 ->mondays()
-                ->at("09:{$minutes}")
+                ->at("05:{$minutes}")
                 ->appendOutputTo(storage_path('logs/command-analytics-report-' . date('Y-m-d') . '.log'));
         });
     }
