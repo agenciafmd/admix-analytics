@@ -2,9 +2,6 @@
 
 namespace Agenciafmd\Analytics\Providers;
 
-use Agenciafmd\Admix\View\Components\Ui;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class BladeServiceProvider extends ServiceProvider
