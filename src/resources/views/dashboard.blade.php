@@ -2,31 +2,26 @@
 
 @section('content')
     <div class="row">
-        <!-- http://screencloud.net/v/DN2ov -->
-        <div class="col-sm-6 col-md-3">
-            @include('agenciafmd/analytics::widgets.cards.sessions')
-        </div>
-        <div class="col-sm-6 col-md-3">
-            @include('agenciafmd/analytics::widgets.cards.users')
-        </div>
-        <div class="col-sm-6 col-md-3">
-            @include('agenciafmd/analytics::widgets.cards.new-users')
-        </div>
-        <div class="col-sm-6 col-md-3">
-            @include('agenciafmd/analytics::widgets.cards.organic-searches')
-        </div>
-        <div class="col-sm-6 col-md-3">
-            @include('agenciafmd/analytics::widgets.cards.bounce-rate')
-        </div>
-        <div class="col-sm-6 col-md-3">
-            @include('agenciafmd/analytics::widgets.cards.avg-session-duration')
-        </div>
-        <div class="col-sm-6 col-md-3">
-            @include('agenciafmd/analytics::widgets.cards.impressions')
-        </div>
-        <div class="col-sm-6 col-md-3">
-            @include('agenciafmd/analytics::widgets.cards.goal-completions-all')
-        </div>
+
+        <livewire:analytics::card label="Acessos" metrics="ga:sessions" />
+
+        <livewire:analytics::card label="Acessos Orgânicos" metrics="ga:organicSearches" />
+
+        <livewire:analytics::card label="Usuários" metrics="ga:users" />
+
+        <livewire:analytics::card label="Novos Usuários" metrics="ga:newUsers" />
+
+        <livewire:analytics::card label="Duração Média dos Acessos" metrics="ga:avgSessionDuration" format="time" />
+
+        <livewire:analytics::card label="Tempo Médio de Carregamento" metrics="ga:avgPageLoadTime" format="seconds" />
+
+        <livewire:analytics::card-lead label="Leads Recebidos" />
+
+        <livewire:analytics::card label="Visualizações de Páginas" metrics="ga:pageviews" />
+
+{{--        <livewire:analytics::card label="Impressões" metrics="ga:impressions" />--}}
+
+{{--        <livewire:analytics::card label="Conversões" metrics="ga:goalCompletionsAll" />--}}
     </div>
     <div class="row">
         <div class="col-lg-12">

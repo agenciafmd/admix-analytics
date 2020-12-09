@@ -24,6 +24,7 @@ class AnalyticsServiceProvider extends ServiceProvider
     {
         $this->app->register(BladeServiceProvider::class);
         $this->app->register(CommandServiceProvider::class);
+        $this->app->register(LivewireServiceProvider::class);
     }
 
     protected function loadMigrations()

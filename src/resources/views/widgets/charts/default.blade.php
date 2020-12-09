@@ -47,7 +47,7 @@
                 width: 2,
             },
             series: [{
-                name: "Visualização de Páginas",
+                name: "Acessos",
                 data: [{{ $data }}]
             }],
             labels: [
