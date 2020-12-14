@@ -10,7 +10,7 @@ class AnalyticsReport extends Command
 {
     protected $signature = 'analytics:report';
 
-    protected $description = 'Dispara emails com as estatisticas';
+    protected $description = 'Dispara emails com as estatísticas';
 
     public function handle()
     {

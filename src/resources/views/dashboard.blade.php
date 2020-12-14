@@ -43,18 +43,14 @@
                 </div>
                 <div class="card-block">
                     <div class="row">
-                        <div class="col-sm-12 col-lg-3">
-                            @include('agenciafmd/analytics::widgets.bars.city')
-                        </div>
-                        <div class="col-sm-12 col-lg-3">
-                            @include('agenciafmd/analytics::widgets.bars.browser')
-                        </div>
-                        <div class="col-sm-12 col-lg-3">
-                            @include('agenciafmd/analytics::widgets.bars.screen-resolution')
-                        </div>
-                        <div class="col-sm-12 col-lg-3">
-                            @include('agenciafmd/analytics::widgets.bars.device-category')
-                        </div>
+
+                        <livewire:analytics::bar label="Cidade" dimensions="ga:city" />
+
+                        <livewire:analytics::bar label="Navegador" dimensions="ga:browser" />
+
+                        <livewire:analytics::bar label="Resolução de Tela" dimensions="ga:screenResolution" />
+
+                        <livewire:analytics::bar label="Dispositivos" dimensions="ga:deviceCategory" />
                     </div>
                 </div>
             </div>
