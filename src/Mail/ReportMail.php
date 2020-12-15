@@ -2,91 +2,114 @@
 
 namespace Agenciafmd\Analytics\Mail;
 
-use Agenciafmd\Analytics\Services\AnalyticsService;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Carbon;
+use Spatie\Analytics\AnalyticsFacade as Analytics;
+use Spatie\Analytics\Period;
 
 class ReportMail extends Mailable
 {
     protected $notifiable;
+
+    /* number of days before yesterday */
+    protected int $days = 7;
 
     public function __construct($notifiable)
     {
         $this->notifiable = $notifiable;
     }
 
-    public function build(AnalyticsService $analytics)
+    public function build()
     {
-        $view['initialDate'] = Carbon::yesterday()
-            ->subDays(7)
-            ->startOfDay();
-        $view['finalDate'] = Carbon::yesterday()
-            ->endOfDay();
+        $period = Period::create(
+            Carbon::yesterday()
+                ->subDays($this->days - 1)
+                ->startOfDay(),
+            Carbon::yesterday()
+                ->endOfDay()
+        );
 
-        $view['sessions'] = human_number($analytics->generic('ga:sessions')['totalForAllResults']);
-        $view['newUsers'] = human_number($analytics->generic('ga:newUsers')['totalForAllResults']);
-        $view['organicSearches'] = human_number($analytics->generic('ga:organicSearches')['totalForAllResults']);
+        $view['initialDate'] = $period->startDate;
+        $view['finalDate'] = $period->endDate;
+        $view['sessions'] = $this->total('ga:sessions', $period);
+        $view['newUsers'] = $this->total('ga:newUsers', $period);
+        $view['organicSearches'] = $this->total('ga:organicSearches', $period);
 
-        $analyticsTopPages = $analytics->topPages();
-        $topPages = collect([]);
-        foreach ($analyticsTopPages as $page) {
-            $topPages->push((object)[
-                'path' => $page['pagePath'],
-                'pageViews' => human_number($page['pageViews']),
-            ]);
-        }
+        $filter = "ga:pageTitle!=(not set)";
+        $view['topPages'] = $this->topDimensions('ga:pageViews', 'ga:pagePath', $period, $filter);
 
-        $view['topPages'] = $topPages;
+        $filter = "ga:keyword!=(none);ga:keyword!=(not set);ga:keyword!=(not provided);ga:keyword!=(automatic matching)";
+        $view['topKeywords'] = $this->topDimensions('ga:pageViews', 'ga:keyword', $period, $filter);
 
-        $analyticsTopKeyword = $analytics->topKeyword();
-        $topKeyword = collect([]);
-        foreach ($analyticsTopKeyword as $page) {
-            $topKeyword->push((object)[
-                'keyword' => $page['keyword'],
-                'pageViews' => human_number($page['pageViews']),
-            ]);
-        }
+        $filter = "ga:source!=(none);ga:source!=(not set)";
+        $view['topSource'] = $this->topDimensions('ga:pageViews', 'ga:source', $period, $filter);
 
-        $view['topKeyword'] = $topKeyword;
+        $filter = "ga:medium!=(none);ga:medium!=(not set)";
+        $view['topMedium'] = $this->topDimensions('ga:pageViews', 'ga:medium', $period, $filter);
 
-        $analyticsTopMedium = $analytics->topMedium();
-        $topMedium = collect([]);
-        foreach ($analyticsTopMedium as $page) {
-            $topMedium->push((object)[
-                'medium' => $page['medium'],
-                'pageViews' => human_number($page['pageViews']),
-            ]);
-        }
+        $filter = "ga:deviceCategory!=(none);ga:deviceCategory!=(not set)";
+        $view['topDeviceCategory'] = $this->topDimensions('ga:pageViews', 'ga:deviceCategory', $period, $filter);
 
-        $view['topMedium'] = $topMedium;
+        $filter = "ga:city!=(none);ga:city!=(not set)";
+        $view['topCities'] = $this->topDimensions('ga:pageViews', 'ga:city', $period, $filter);
 
-        $analyticsTopDeviceCategory = $analytics->topDimensions('ga:deviceCategory');
-        $topDeviceCategory = collect([]);
-        $topDeviceCategoryTotal = $analyticsTopDeviceCategory['totalForAllResults'];
-        foreach ($analyticsTopDeviceCategory['rows'] as $device) {
-            $topDeviceCategory->push((object)[
-                'deviceCategory' => $device['dimensions'],
-                'sessions' => human_number($device['sessions']),
-                'percent' => human_number(($device['sessions'] * 100) / $topDeviceCategoryTotal),
-            ]);
-        }
+        $filter = "ga:userAgeBracket!=(none);ga:userAgeBracket!=(not set)";
+        $view['topAges'] = $this->topDimensions('ga:pageViews', 'ga:userAgeBracket', $period, $filter)
+            ->sortBy('dimensions');
 
-        $view['topDeviceCategory'] = $topDeviceCategory;
+        $filter = "ga:userGender!=(none);ga:userGender!=(not set)";
+        $topGenders = $this->topDimensions('ga:pageViews', 'ga:userGender', $period, $filter);
+        $sumTopGenders = $topGenders->sum('metrics');
+        $view['topGenders'] = $topGenders->map(function ($item) use ($sumTopGenders) {
+                $genders['female'] = 'Feminino';
+                $genders['male'] = 'Masculino';
 
-        $analyticsTopCity = $analytics->topDimensions('ga:city');
-        $topCity = collect([]);
-        foreach ($analyticsTopCity['rows'] as $city) {
-            $topCity->push((object)[
-                'city' => $city['dimensions'],
-                'pageViews' => human_number($city['sessions']),
-            ]);
-        }
-
-        $view['topCity'] = $topCity;
+                return [
+                    'dimensions' => ($genders[$item['dimensions']]) ?? ucfirst($item['dimensions']),
+                    'metrics' => $item['metrics'],
+                    'percent' => round(($item['metrics'] * 100) / $sumTopGenders),
+                ];
+            });
 
         return $this->to($this->notifiable->email, $this->notifiable->name)
             ->subject(config('app.name') . ' | Relatório de Semanal')
             ->view('agenciafmd/analytics::email.report')
             ->with($view);
     }
+
+    protected function total(string $metrics, Period $period)
+    {
+        return human_number(Analytics::performQuery($period, $metrics, [
+                'dimensions' => 'ga:date',
+            ])->totalsForAllResults[$metrics] ?? 0);
+    }
+
+    protected function topDimensions(
+        string $metrics,
+        string $dimensions,
+        Period $period,
+        string $filters = '',
+        int $quantity = 5
+    )
+    {
+        $response = Analytics::performQuery($period, $metrics, [
+                'dimensions' => $dimensions,
+                'sort' => "-{$metrics}",
+                'max-results' => $quantity,
+            ] + (($filters) ? ['filters' => "{$filters}"] : []),
+        );
+
+        $total = array_sum(array_column($response['rows'], 1)) ?? 1;
+
+        return collect($response['rows'] ?? [])
+            ->map(function (array $row) use ($total){
+                return [
+                    'dimensions' => $row[0],
+                    'metrics' => (int)$row[1],
+                    'percent' => round(((int)$row[1] * 100) / $total),
+                ];
+            })
+            ->splice(0, $quantity);
+    }
+
 }
