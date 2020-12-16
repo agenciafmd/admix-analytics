@@ -15,6 +15,8 @@ class Card extends Component
 
     public string $metrics;
 
+    public string $dimensions;
+
     public string $period;
 
     /* integer | time | seconds */
@@ -27,10 +29,17 @@ class Card extends Component
         $this->readyToLoad = true;
     }
 
-    public function mount($label = 'Usuários', $metrics = 'ga:users', $period = 7, $format = 'integer')
+    public function mount(
+        $label = 'Usuários',
+        $metrics = 'ga:users',
+        $dimensions = 'ga:date',
+        $period = 7,
+        $format = 'integer'
+    )
     {
         $this->label = $label;
         $this->metrics = $metrics;
+        $this->dimensions = $dimensions;
         $this->period = $period;
         $this->format = $format;
     }
@@ -54,7 +63,7 @@ class Card extends Component
                 ->subDays($this->period)
                 ->endOfDay()
         );
-        $totalPast = human_number($this->total($period));
+        $totalPast = $this->total($period);
 
         //de 7 dias atrás até ontem
         $period = Period::create(
@@ -64,15 +73,19 @@ class Card extends Component
             Carbon::yesterday()
                 ->endOfDay()
         );
-        $total = human_number($this->total($period));
+        $total = $this->total($period);
         $indicator = $this->indicator($totalPast, $total);
+
+        if ($this->format == 'integer') {
+            $total = human_number($total);
+        }
 
         if ($this->format == 'time') {
             $total = date('i \m\i\n s \s', mktime(0, 0, $total, 1, 1, 2017));
         }
 
         if ($this->format == 'seconds') {
-            $total = ($total <= 0) ? '< 1 s' : $total . ' s';
+            $total = ($total <= 0) ? '< 1 s' : round($total, 2) . ' s';
             $indicator = 0;
         }
 
@@ -86,7 +99,7 @@ class Card extends Component
     protected function total(Period $period)
     {
         return Analytics::performQuery($period, $this->metrics, [
-                'dimensions' => 'ga:date',
+                'dimensions' => $this->dimensions,
             ])->totalsForAllResults[$this->metrics] ?? 0;
     }
 
