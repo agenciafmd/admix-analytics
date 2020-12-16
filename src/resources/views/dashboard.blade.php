@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="row">
-
         <livewire:analytics::card label="Acessos" metrics="ga:sessions" />
 
         <livewire:analytics::card label="Acessos Orgânicos" metrics="ga:organicSearches" />
@@ -18,10 +17,6 @@
         <livewire:analytics::card-lead label="Leads Recebidos" />
 
         <livewire:analytics::card label="Visualizações de Páginas" metrics="ga:pageviews" />
-
-{{--        <livewire:analytics::card label="Impressões" metrics="ga:impressions" />--}}
-
-{{--        <livewire:analytics::card label="Conversões" metrics="ga:goalCompletionsAll" />--}}
     </div>
     <div class="row">
         <div class="col-lg-12">
@@ -30,7 +25,7 @@
                     Como está o trafego do site?
                 </div>
                 <div class="card-body">
-                    @include('agenciafmd/analytics::widgets.charts.sessions')
+                    <livewire:analytics::chart label="Visualizações de Páginas" metrics="ga:pageviews" />
                 </div>
             </div>
         </div>
@@ -43,7 +38,6 @@
                 </div>
                 <div class="card-block">
                     <div class="row">
-
                         <livewire:analytics::bar label="Cidade" dimensions="ga:city" />
 
                         <livewire:analytics::bar label="Navegador" dimensions="ga:browser" />
