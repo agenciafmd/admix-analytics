@@ -14,7 +14,7 @@
                                 <div class="float-left">
                                     <strong>{{ ucfirst($row['dimensions']) }}</strong>
                                 </div>
-                                <div class="float-right"><strong>{{ $row['sessions'] }}</strong>
+                                <div class="float-right"><strong>{{ human_number($row['sessions']) }}</strong>
                                     <small class="text-muted">({{ $row['percent'] }}%)</small>
                                 </div>
                             </div>
