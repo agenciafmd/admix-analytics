@@ -68,7 +68,7 @@ Semanalmente, enviamos um relatório para os usuários cadastrados no painel.
 
 Não esqueça de publicar os assets no seu projeto com o comando 
 
-```
+```bash
 php artisan vendor:publish --tag=admix-analytics:assets
 ```
 
@@ -94,7 +94,7 @@ Caso seja **extremamente** necessário, é possivel a configuração do pacote n
 
 Para isso, publique o arquivo com o comando abaixo:
 
-```
+```bash
 php artisan vendor:publish --tag="admix-analytics:config"
 php artisan vendor:publish --tag="admix-analytics:views"
 ```
