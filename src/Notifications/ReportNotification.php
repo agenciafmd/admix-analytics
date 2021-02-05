@@ -11,7 +11,7 @@ class ReportNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $tries = 5;
+    public $tries = 3;
 
     public function via($notifiable)
     {
