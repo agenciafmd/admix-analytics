@@ -72,7 +72,7 @@ class ReportMail extends Mailable
             });
 
         return $this->to($this->notifiable->email, $this->notifiable->name)
-            ->subject(config('app.name') . ' | Relatório de Semanal')
+            ->subject(config('app.name') . ' | Relatório Semanal')
             ->view('agenciafmd/analytics::email.report')
             ->with($view);
     }
