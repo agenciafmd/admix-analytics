@@ -56,6 +56,6 @@ class AnalyticsServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../resources/images' => public_path('images'),
-        ], 'images');
+        ], 'admix-analytics:assets');
     }
 }

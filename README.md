@@ -63,10 +63,10 @@ ANALYTICS_VIEW_ID=123456
 
 Semanalmente, enviamos um relatório para os usuários cadastrados no painel.
 
-Não esqueça de publicar as imagens no seu projeto com o comando 
+Não esqueça de publicar as imagens no seu projeto com o comando. 
 
 ```
-php artisan vendor:publish --provider="Agenciafmd\Analytics\Providers\AnalyticsServiceProvider" --tag="images" --force
+php artisan vendor:publish --force --tag=admix-analytics:assets
 ```
 
 ## Customização
