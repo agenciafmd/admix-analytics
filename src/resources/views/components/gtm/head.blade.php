@@ -8,4 +8,6 @@
     })(window,document,'script','dataLayer','{{ config('services.google.tagmanager') }}');
     </script>
     <!-- End Google Tag Manager -->
+
+    <link href="https://www.google-analytics.com" rel="preconnect" crossorigin>
 @endif
