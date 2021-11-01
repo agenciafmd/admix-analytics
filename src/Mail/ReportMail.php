@@ -99,10 +99,12 @@ class ReportMail extends Mailable
             ] + (($filters) ? ['filters' => "{$filters}"] : []),
         );
 
+        $response['rows'] = ($response['rows']) ?? [];
+
         $total = array_sum(array_column($response['rows'], 1)) ?? 1;
 
-        return collect($response['rows'] ?? [])
-            ->map(function (array $row) use ($total){
+        return collect($response['rows'])
+            ->map(function (array $row) use ($total) {
                 return [
                     'dimensions' => $row[0],
                     'metrics' => (int)$row[1],
