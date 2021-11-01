@@ -105,6 +105,11 @@ class ReportMail extends Mailable
 
         $total = array_sum(array_column($response['rows'], 1)) ?? 1;
 
+        if ($total === 0) {
+            return collect([]);
+        }
+
+
         return collect($response['rows'])
             ->map(function (array $row) use ($total) {
                 return [
