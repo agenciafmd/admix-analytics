@@ -14,11 +14,21 @@ class AnalyticsReport extends Command
 
     public function handle()
     {
+        if (!config('analytics.view_id')) {
+            return $this->error('Configuração Analytics não encontrada');
+        }
+
+        if (!file_exists(config('analytics.service_account_credentials_json'))) {
+            return $this->error('Arquivo de credenciais do analytics não encontrado');
+        }
+
         $users = User::isActive()
             ->get();
 
         $users->each(function ($user) {
             $user->notify(new ReportNotification());
         });
+
+        return $this->info('Estatísticas enviadas com sucesso');
     }
 }
