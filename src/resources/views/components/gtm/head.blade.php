@@ -1,4 +1,11 @@
 @if(config('services.google.tagmanager'))
+    <link href="https://www.google-analytics.com" rel="preconnect" crossorigin>
+    <link href="https://www.google-analytics.com" rel="dns-prefetch" crossorigin>
+    <link href="https://www.googletagmanager.com" rel="preconnect" crossorigin>
+    <link href="https://www.googletagmanager.com" rel="dns-prefetch" crossorigin>
+    <link href="https://connect.facebook.net" rel="preconnect" crossorigin>
+    <link href="https://connect.facebook.net" rel="dns-prefetch" crossorigin>
+
     <!-- Google Tag Manager -->
     <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -8,6 +15,4 @@
     })(window,document,'script','dataLayer','{{ config('services.google.tagmanager') }}');
     </script>
     <!-- End Google Tag Manager -->
-
-    <link href="https://www.google-analytics.com" rel="preconnect" crossorigin>
 @endif
