@@ -1,32 +1,33 @@
 {
-  "name": "agenciafmd/admix-analytics",
-  "description": "Analytics - Agência F&MD",
-  "homepage": "https://github.com/agenciafmd/admix-analytics",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Irineu Junior",
-      "email": "irineu@fmd.ag",
-      "homepage": "https://fmd.ag/",
-      "role": "Developer"
+    "name": "agenciafmd/admix-analytics",
+    "description": "Analytics",
+    "authors": [
+        {
+            "name": "Irineu Junior",
+            "email": "irineu@fmd.ag",
+            "homepage": "https://fmd.ag/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "laravel/framework": "10.*",
+        "still-code/laravel-umami": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Agenciafmd\\Analytics\\": "src/",
+            "Agenciafmd\\Analytics\\Database\\Factories\\": "database/factories/",
+            "Agenciafmd\\Analytics\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Agenciafmd\\Analytics\\Providers\\AnalyticsServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
     }
-  ],
-  "require": {
-    "laravel/framework": "^8.0",
-    "spatie/laravel-analytics": "^3.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Agenciafmd\\Analytics\\": "src/"
-    }
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Agenciafmd\\Analytics\\Providers\\AnalyticsServiceProvider"
-      ],
-      "aliases": {
-      }
-    }
-  }
 }

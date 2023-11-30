@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class AnalyticsServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(): void
     {
         $this->providers();
 
@@ -15,36 +15,34 @@ class AnalyticsServiceProvider extends ServiceProvider
         $this->publish();
     }
 
-    public function register()
+    public function register(): void
     {
         $this->loadConfigs();
     }
 
-    protected function providers()
+    private function providers(): void
     {
         $this->app->register(BladeServiceProvider::class);
         $this->app->register(CommandServiceProvider::class);
         $this->app->register(LivewireServiceProvider::class);
     }
 
-    protected function loadMigrations()
-    {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-    }
-
-    protected function loadConfigs()
-    {
-        $this->mergeConfigFrom(__DIR__ . '/../config/analytics.php', 'analytics');
-    }
-
-    protected function publish()
+    private function publish(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/analytics.php' => base_path('config/analytics.php'),
+            __DIR__ . '/../../config/analytics.php' => base_path('config/analytics.php'),
         ], 'admix-analytics:config');
 
-        $this->publishes([
-            __DIR__ . '/../resources/images' => public_path('images'),
-        ], 'admix-analytics:assets');
+    }
+
+    private function loadMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+    }
+
+
+    private function loadConfigs(): void
+    {
+        $this->mergeConfigFrom(__DIR__ . '/../../config/analytics.php', 'analytics');
     }
 }

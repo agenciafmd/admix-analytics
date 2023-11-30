@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 use Livewire\Component;
 use Umami\Umami;
 
-class Card extends Component
+class CardRejection extends Component
 {
     public string $label;
 
@@ -26,10 +26,10 @@ class Card extends Component
     }
 
     public function mount(
-        $label = 'Visualizações',
-        $metrics = 'stats:pageviews',
-        $dimensions = 'stats:pageviews',
-        $period = 365,
+        $label = 'Usuários',
+        $metrics = 'ga:users',
+        $dimensions = 'ga:date',
+        $period = 7,
         $format = 'integer'
     )
     {
@@ -47,7 +47,7 @@ class Card extends Component
             $view['total'] = 0;
             $view['indicator'] = 0;
 
-            return view('agenciafmd/analytics::livewire.card', $view);
+            return view('agenciafmd/analytics::livewire.card-rejection', $view);
         }
 
         $period = [
@@ -57,32 +57,22 @@ class Card extends Component
             "endAt" => Carbon::today()
                 ->endOfDay(),
         ];
+
         $total = $this->total($period);
-
-        if(key_exists('value',$total)) {
-            $value = $total['value'];
-        }else{
-            $value = $total[0]['y'];
-        }
-
-        if(key_exists('change',$total)) {
-            $indicator = $this->indicator($total['change'], $value);
-        }else{
-            $indicator = 0;
-        }
+        $indicator = 0;
 
         if ($this->format == 'integer') {
-            $total = number_format($value,0);
+            $total = number_format($total,0);
         }
 
         if ($this->format == 'time') {
-            $total = $value/6000;
+            $total = $total/6000;
             $time = explode('.',number_format($total,2));
             $total = date('i \m\i\n s \s', mktime(0, $time[0], $time[1], 1, 1, 2017));
         }
 
         if ($this->format == 'seconds') {
-            $total = ($value <= 0) ? '< 1 s' : round($value, 2) . ' s';
+            $total = ($total <= 0) ? '< 1 s' : round($total, 2) . ' s';
             $indicator = 0;
         }
 
@@ -90,16 +80,23 @@ class Card extends Component
         $view['total'] = $total;
         $view['indicator'] = $indicator;
 
-        return view('agenciafmd/analytics::livewire.card', $view);
+        return view('agenciafmd/analytics::livewire.card-rejection', $view);
     }
 
     protected function total(Array $period)
     {
-        $metrics = explode(':',$this->metrics);
-        if($metrics[0] == 'pageviews'){
-            $period = array_merge($period,['unit' => 'year']);
-        }
-        return Umami::query(config('analytics.site_id'),$metrics[0],$period,true)[$metrics[1]];
+        $uniques = Umami::query(config('analytics.site_id'),'stats',[
+            'startAt'=> \Carbon\Carbon::now()->subMonth(),
+            'endAt'=>Carbon::now(),
+        ],true)['uniques']['value'];
+
+        $sessions = Umami::query(config('analytics.site_id'),'pageviews',[
+            'startAt'=>Carbon::now()->subYear(),
+            'endAt'=>Carbon::now(),
+            'unit' => 'year',
+        ],true)['sessions'][0]['y'];
+
+        return ($uniques/$sessions)*100;
     }
 
     private function indicator($totalPast, $total)

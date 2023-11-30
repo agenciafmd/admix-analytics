@@ -11,9 +11,8 @@
     <script>
         var options = {
             colors: [
-                window.tabler.colors.blue,
-                window.tabler.colors.red,
-                window.tabler.colors.orange,
+                "#000066",
+                "#0000FF",
             ],
             chart: {
                 height: 350,
@@ -92,13 +91,17 @@
                 enabled: false
             },
             stroke: {
-                curve: 'straight',
+                curve: 'smooth',
                 width: 2,
             },
             series: [{
                 name: "{{ $label }}",
                 data: [{{ $values }}]
-            }],
+            },
+                {
+                    name: "{{ $label2 }}",
+                    data: [{{ $values2 }}]
+                }],
             labels: [
                 "{!! $labels !!}"
             ],

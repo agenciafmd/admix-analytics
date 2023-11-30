@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 use Livewire\Component;
 use Umami\Umami;
 
-class Bar extends Component
+class Referrer extends Component
 {
     public string $label;
 
@@ -26,9 +26,9 @@ class Bar extends Component
     }
 
     public function mount(
-        $label = 'Cidades',
-        $dimensions = 'ga:city',
-        $metrics = 'ga:sessions',
+        $label = 'Referências',
+        $dimensions = '',
+        $metrics = 'metrics:referrer',
         $period = 30,
         $quantity = 10
     )
@@ -55,7 +55,7 @@ class Bar extends Component
             $view['total'] = 0;
             $view['rows'] = collect($rows);
 
-            return view('agenciafmd/analytics::livewire.bar', $view);
+            return view('agenciafmd/analytics::livewire.referrer', $view);
         }
 
         $period = [
@@ -72,7 +72,7 @@ class Bar extends Component
         $view['total'] = $dimensions['total'];
         $view['rows'] = $dimensions['rows'];
 
-        return view('agenciafmd/analytics::livewire.bar', $view);
+        return view('agenciafmd/analytics::livewire.referrer', $view);
     }
 
     protected function topDimensions(Array $period)

@@ -3,15 +3,14 @@
 namespace Agenciafmd\Analytics\Http\Livewire;
 
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
-use Spatie\Analytics\AnalyticsFacade as Analytics;
-use Spatie\Analytics\Period;
-use Illuminate\Support\Str;
+use Umami\Umami;
 
 class Chart extends Component
 {
     public string $label;
+
+    public string $label2;
 
     public string $metrics;
 
@@ -19,10 +18,6 @@ class Chart extends Component
 
     public string $dimensions = "ga:date";
 
-    /*
-     * TODO: deixar esse cara assíncrono em algum momento
-     * https://chasingcode.dev/blog/laravel-livewire-dynamic-charts-apexcharts/
-     */
     public bool $readyToLoad = true;
 
     public function loadComponent()
@@ -32,65 +27,53 @@ class Chart extends Component
 
     public function mount(
         $label = 'Visualizações',
+        $label2 = 'Vistiantes',
         $metrics = 'ga:pageViews',
-        $period = 7
+        $period = 30
     )
     {
         $this->label = $label;
+        $this->label2 = $label2;
         $this->metrics = $metrics;
         $this->period = $period;
     }
 
     public function render()
     {
-//        if (!$this->readyToLoad) {
-//            for ($i = ($this->period - 1); $i >= 0; $i--) {
-//                $labels[] = Carbon::yesterday()
-//                    ->subDays($i)
-//                    ->locale('en')
-//                    ->isoFormat('D MMM YYYY');
-//                $values[] = 0;
-//            }
-//
-//            $view['label'] = $this->label;
-//            $view['values'] = collect($values)->implode(', ');
-//            $view['labels'] = collect($labels)->implode('", "');
-//
-//            return view('agenciafmd/analytics::livewire.chart', $view);
-//        }
-
-        //de 7 dias atrás até ontem
-        $period = Period::create(
-            Carbon::yesterday()
+        $period = [
+            'startAt' => Carbon::today()
                 ->subDays($this->period - 1)
                 ->startOfDay(),
-            Carbon::yesterday()
-                ->endOfDay()
-        );
-
-        $results = $this->results($period);
-
+            "endAt" => Carbon::today()
+                ->endOfDay(),
+        ];
+        $results = $this->results($period,'pageviews');
+        $results2 = $this->results($period,'sessions');
         $view['label'] = $this->label;
+        $view['label2'] = $this->label2;
         $view['labels'] = $results->pluck('label')
             ->implode('", "');
         $view['values'] = $results->pluck('value')
+            ->implode(', ');
+        $view['labels2'] = $results2->pluck('label')
+            ->implode('", "');
+        $view['values2'] = $results2->pluck('value')
             ->implode(', ');
 
         return view('agenciafmd/analytics::livewire.chart', $view);
     }
 
-    protected function results(Period $period)
+    protected function results(Array $period, string $type)
     {
-        $response = Analytics::performQuery($period, $this->metrics, [
-            'dimensions' => $this->dimensions,
-        ]);
+        $response = Umami::query(config('analytics.site_id'),'pageviews',
+            $period,true);
 
-        return collect($response['rows'] ?? [])->map(function (array $row) {
+        return collect($response[$type] ?? [])->sort()->map(function (array $row) {
             return [
-                'label' => Carbon::createFromFormat('Ymd', $row[0])
+                'label' => Carbon::createFromFormat('Y-m-d', $row['x'])
                     ->locale('en')
                     ->isoFormat('D MMM YYYY'),
-                'value' => (int)$row[1],
+                'value' => (int)$row['y'],
             ];
         });
     }

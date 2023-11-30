@@ -6,15 +6,11 @@ use Illuminate\Support\Carbon;
 use Livewire\Component;
 use Umami\Umami;
 
-class Bar extends Component
+class SearchUrl extends Component
 {
-    public string $label;
-
     public string $metrics;
 
     public string $period;
-
-    public string $dimensions;
 
     public int $quantity;
 
@@ -26,15 +22,11 @@ class Bar extends Component
     }
 
     public function mount(
-        $label = 'Cidades',
-        $dimensions = 'ga:city',
-        $metrics = 'ga:sessions',
+        $metrics = 'metrics:query',
         $period = 30,
         $quantity = 10
     )
     {
-        $this->label = $label;
-        $this->dimensions = $dimensions;
         $this->metrics = $metrics;
         $this->period = $period;
         $this->quantity = $quantity;
@@ -45,17 +37,16 @@ class Bar extends Component
         if (!$this->readyToLoad) {
             for ($i = 0; $i <= $this->quantity; $i++) {
                 $rows[] = [
-                    'dimensions' => 'Carregando...',
+                    'page' => 'Carregando...',
                     'sessions' => 0,
                     'percent' => 0,
                 ];
             }
 
-            $view['label'] = $this->label;
-            $view['total'] = 0;
             $view['rows'] = collect($rows);
+            $view['total'] = 0;
 
-            return view('agenciafmd/analytics::livewire.bar', $view);
+            return view('agenciafmd/analytics::livewire.search-url', $view);
         }
 
         $period = [
@@ -68,16 +59,15 @@ class Bar extends Component
 
         $dimensions = $this->topDimensions($period);
 
-        $view['label'] = $this->label;
-        $view['total'] = $dimensions['total'];
         $view['rows'] = $dimensions['rows'];
-
-        return view('agenciafmd/analytics::livewire.bar', $view);
+        $view['total'] = $dimensions['total'];
+        return view('agenciafmd/analytics::livewire.search-url', $view);
     }
 
     protected function topDimensions(Array $period)
     {
         $metrics = explode(':',$this->metrics);
+
         $response = Umami::query(config('analytics.site_id'),$metrics[0],[
             'startAt'=>Carbon::now()->subMonth(),
             'endAt'=>Carbon::now(),
@@ -88,7 +78,7 @@ class Bar extends Component
         $rows = collect($response ?? [])
             ->map(function (array $dataRow) use ($total) {
                 return [
-                    'dimensions' => ($dataRow['x']) ? $dataRow['x'] : '(Desconhecido)',
+                    'page' => ($dataRow['x']) ? $dataRow['x'] : '(Desconhecido)',
                     'sessions' => (int)$dataRow['y'],
                     'percent' => round(((int)$dataRow['y'] / $total) * 100, 2),
                 ];

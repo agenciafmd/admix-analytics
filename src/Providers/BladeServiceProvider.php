@@ -2,11 +2,12 @@
 
 namespace Agenciafmd\Analytics\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class BladeServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(): void
     {
         $this->loadBladeComponents();
 
@@ -14,38 +15,45 @@ class BladeServiceProvider extends ServiceProvider
 
         $this->loadBladeComposers();
 
+        $this->setMenu();
+
         $this->loadViews();
 
         $this->publish();
     }
 
-    public function register()
+    public function register(): void
     {
         //
     }
 
-    protected function loadBladeComponents()
+    private function loadBladeComponents(): void
+    {
+        Blade::componentNamespace('Agenciafmd\\Analytics\\Http\\Components', 'admix-analytics');
+    }
+
+    private function loadBladeComposers(): void
     {
         //
     }
 
-    protected function loadBladeComposers()
+    private function loadBladeDirectives(): void
     {
         //
     }
 
-    protected function loadBladeDirectives()
+    private function setMenu(): void
     {
         //
     }
 
-    protected function loadViews()
+    private function loadViews(): void
     {
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'agenciafmd/analytics');
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'admix-analytics');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'agenciafmd/analytics');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'admix-analytics');
     }
 
-    protected function publish()
+    private function publish(): void
     {
         $this->publishes([
             __DIR__ . '/../resources/views' => base_path('resources/views/vendor/agenciafmd/analytics'),
